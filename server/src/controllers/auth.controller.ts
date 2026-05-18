@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.model";
+import { AuthRequest } from "../middleware/auth.middleware";
 
 const createToken = (userId: string) => {
     return jwt.sign({ userId }, process.env.JWT_SECRET as string, {
@@ -79,10 +80,12 @@ export const logout = async (req: Request, res: Response) => {
     res.json({ message: "Logged out" });
 };
 
-export const userList = async (req: Request, res: Response) => {
-    const users = await User.find();
+export const currentProfile = async (req: AuthRequest, res: Response) => {
+    const user = await User.findById(req.user?.userId).select("-passwordHash");
 
-    res.json({
-        users
-    })
+    if (!user) {
+        return res.status(400).json({ message: "User not found" });
+    }
+
+    res.json({ user });
 };
