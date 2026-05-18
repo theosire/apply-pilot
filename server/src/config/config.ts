@@ -1,0 +1,17 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+const config = {
+    port: process.env.PORT || 5000,
+    mongoUri: process.env.MONGO_URI || '',
+    jwtSecret: process.env.JWT_SECRET || '',
+    clientUrl: process.env.CLIENT_URL || '',
+    nodeEnv: process.env.NODE_ENV || 'development',
+};
+
+const required = ['mongoUri', 'jwtSecret'] as const;
+required.forEach(key => {
+    if (!config[key]) throw new Error(`Missing required env variable: ${key}`);
+});
+
+export default config;
