@@ -4,7 +4,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import config from './config/config';
-import router from './routes/auth';
+import authRouter from './routes/auth';
+import { errorMiddleware } from './middleware/error.middleware';
 
 const app = express();
 
@@ -14,6 +15,9 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/", router);
+app.use("/api/auth", authRouter);
+
+// Error middleware mush be mounted after all routes
+app.use(errorMiddleware);
 
 export default app;
