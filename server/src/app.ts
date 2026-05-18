@@ -5,8 +5,8 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import config from './config/config';
 
-import authRouter from './routes/auth';
-import applicationRouter from './routes/applications';
+import authRouter from './routes/auth.routes';
+import applicationRouter from './routes/applications.routes';
 import { errorMiddleware } from './middleware/error.middleware';
 
 const app = express();
