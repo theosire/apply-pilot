@@ -1,9 +1,10 @@
 import express from "express";
 import { 
     listApplications, 
-    createApplication,  
     getApplication,
+    createApplication,  
     editApplication,
+    moveApplication,
     removeApplication
 } from "../controllers/applications.controller";
 import { protect } from "../middleware/auth.middleware";
@@ -14,9 +15,10 @@ const applicationRouter = express.Router();
 applicationRouter.use(protect);
 
 applicationRouter.get("/", listApplications);
-applicationRouter.post("/", createApplication);
 applicationRouter.get("/:id", getApplication);
+applicationRouter.post("/", createApplication);
 applicationRouter.patch("/:id", editApplication);
+applicationRouter.patch("/:id/move", moveApplication);
 applicationRouter.delete("/:id", removeApplication);
 
 export default applicationRouter;

@@ -58,6 +58,35 @@ export const updateApplicationById = async (
     );
 };
 
+export const moveApplicationById = async (
+    userId: string,
+    applicationId: string,
+    status: string,
+    columnOrder: number
+) => {
+    return Application.findOneAndUpdate(
+        {
+            _id: applicationId,
+            userId,
+        },
+        {
+            status,
+            columnOrder,
+            // Add an activity log entry whenever the application is moved
+            $push: {
+                activityLog: {
+                    action: `Moved to ${status}`,
+                    timestamp: new Date(),
+                },
+            },
+        },
+        {
+            new: true,
+            runValidators: true,
+        },
+    );
+};
+
 export const deleteApplicationById = async (userId: string, applicationId: string) => {
     return Application.findOneAndDelete({ 
         _id: applicationId, 

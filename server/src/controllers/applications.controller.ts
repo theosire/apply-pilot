@@ -1,7 +1,14 @@
 import mongoose from "mongoose";
 import { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
-import { createApplicationForUser, deleteApplicationById, getApplicationById, getApplicationsByUser, updateApplicationById } from "../services/applications.service";
+import { 
+    getApplicationsByUser, 
+    getApplicationById, 
+    createApplicationForUser, 
+    updateApplicationById,
+    moveApplicationById,
+    deleteApplicationById, 
+} from "../services/applications.service";
 
 export const listApplications = async (req: AuthRequest, res: Response) => {
     const userId = req.user?.userId;
@@ -73,7 +80,37 @@ export const editApplication = async (req: AuthRequest, res: Response) => {
 
     res.status(200).json({ 
         application,
-        message: "Application successfully edited." 
+        message: "Application edited successfully." 
+    });
+};
+
+export const moveApplication = async (req: AuthRequest, res: Response) => {
+    const userId = req.user?.userId;
+    const applicationId = req.params.id as string;
+    const { status, columnOrder } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(applicationId)) {
+        return res.status(400).json({ message: "Invalid application ID" });
+    }
+
+    if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const application = await moveApplicationById(
+        userId, 
+        applicationId,
+        status,
+        columnOrder
+    );
+
+    if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+    }
+
+    res.status(200).json({ 
+        application,
+        message: "Application moved successfully." 
     });
 };
 
