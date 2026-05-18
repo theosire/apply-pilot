@@ -42,6 +42,8 @@ export const updateApplicationById = async (
         },
         {
             ...data,
+
+            // Add an activity log entry whenever the application is updated
             $push: {
                 activityLog: {
                         action: "Application edited",

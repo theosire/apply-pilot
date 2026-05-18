@@ -10,6 +10,7 @@ import { protect } from "../middleware/auth.middleware";
 
 const applicationRouter = express.Router();
 
+// All application routes require a logged-in user
 applicationRouter.use(protect);
 
 applicationRouter.get("/", listApplications);

@@ -66,6 +66,7 @@ const applicationSchema = new mongoose.Schema(
       default: "Saved",
     },
 
+    // Position of the card inside its Kanban column
     columnOrder: {
       type: Number,
       default: 0,
@@ -91,6 +92,7 @@ const applicationSchema = new mongoose.Schema(
       default: null,
     },
 
+    // Timeline of changes made to this application
     activityLog: [
       {
         action: String,
