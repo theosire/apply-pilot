@@ -72,7 +72,7 @@ export const moveApplicationById = async (
         {
             status,
             columnOrder,
-            // Add an activity log entry whenever the application is moved
+            // Track Kanban stage changes for the appliation's activity timeline
             $push: {
                 activityLog: {
                     action: `Moved to ${status}`,
