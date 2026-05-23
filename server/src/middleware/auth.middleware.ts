@@ -7,7 +7,7 @@ type JwtPayload = {
 
 export interface AuthRequest extends Request {
     user?: JwtPayload;
-};
+}
 
 // Verify JWT from HTTP-only cookie before allowing access to protected routes
 export const protect = (
