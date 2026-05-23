@@ -1,3 +1,4 @@
+// Handles user authentication requests including registration, login, logout and current profile lookup
 import { Request, Response } from "express";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
@@ -28,6 +29,7 @@ export const register = async (req: Request, res: Response) => {
 
     const token = createToken(user._id.toString());
 
+    // Store JWT in a HTTP-only cookie so frontend JavaScript cannot access it
     res.cookie("token", token, {
         httpOnly: true,
         sameSite: "lax",
@@ -60,6 +62,7 @@ export const login = async (req: Request, res: Response) => {
 
     const token = createToken(user._id.toString());
 
+    // Store JWT in a HTTP-only cookie so frontend JavaScript cannot access it
     res.cookie("token", token, {
         httpOnly: true,
         sameSite: "lax",

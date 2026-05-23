@@ -1,3 +1,4 @@
+// Central Express error handler for returning consistent JSON error responses
 import { Request, Response, NextFunction } from "express"
 
 export const errorMiddleware = (

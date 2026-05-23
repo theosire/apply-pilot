@@ -1,3 +1,4 @@
+// Middleware for protecting routes by validating the JWT stored in cookies
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 

@@ -1,3 +1,4 @@
+// Mongoose schema for storing user account and profile information
 import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema(

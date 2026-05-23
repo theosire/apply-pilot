@@ -1,3 +1,4 @@
+// Contains application db CRUD operations used by the controller
 import { Application } from "../models/Application.model";
 
 export const getApplicationsByUser = async (userId: string) => {

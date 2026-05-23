@@ -1,3 +1,4 @@
+// Defines protected API routes for managing job applications
 import express from "express";
 import { 
     listApplications, 

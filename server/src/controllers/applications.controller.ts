@@ -1,3 +1,4 @@
+// Handles application HTTP requests and delegates CRUD logic to services
 import mongoose from "mongoose";
 import { Response } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";

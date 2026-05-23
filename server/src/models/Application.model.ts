@@ -1,3 +1,4 @@
+// Mongoose schema for tracking job applications and Kanban workflow state
 import mongoose from "mongoose";
 
 const applicationSchema = new mongoose.Schema(
