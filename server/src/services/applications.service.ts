@@ -1,4 +1,4 @@
-// Contains application db CRUD operations used by the controller
+// Contains application database CRUD operations used by the controller
 import { Application } from "../models/Application.model";
 
 export const getApplicationsByUser = async (userId: string) => {
@@ -47,8 +47,8 @@ export const updateApplicationById = async (
             // Add an activity log entry whenever the application is updated
             $push: {
                 activityLog: {
-                        action: "Application edited",
-                        timestamp: new Date(),
+                    action: "Application edited",
+                    timestamp: new Date(),
                 },
             },
         },
@@ -65,22 +65,37 @@ export const moveApplicationById = async (
     status: string,
     columnOrder: number
 ) => {
+    const oldApplication = await Application.findOne({
+        _id: applicationId,
+        userId,
+    });
+
+    if (!oldApplication) {
+        return null
+    }
+
+    const update: Record<string, unknown> = {
+        status,
+        columnOrder,
+    };
+
+    // Only record timeline activity when the card moves to a different status
+    if (oldApplication.status !== status) {
+        // Track Kanban stage changes for the application's activity timeline
+        update.$push = {
+            activityLog: {
+                action: `Moved to ${status}`,
+                timestamp: new Date(),
+            }
+        };
+    }
+
     return Application.findOneAndUpdate(
         {
             _id: applicationId,
             userId,
         },
-        {
-            status,
-            columnOrder,
-            // Track Kanban stage changes for the appliation's activity timeline
-            $push: {
-                activityLog: {
-                    action: `Moved to ${status}`,
-                    timestamp: new Date(),
-                },
-            },
-        },
+        update,
         {
             new: true,
             runValidators: true,
