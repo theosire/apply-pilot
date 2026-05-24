@@ -1,14 +1,15 @@
 // Sends follow-up reminder emails through Gmail SMTP
 
 import nodemailer from 'nodemailer';
+import config from '../config/config';
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
     secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: config.emailUser,
+        pass: config.emailPass,
     },
 });
 
@@ -20,7 +21,7 @@ export const sendFollowUpReminderEmail = async (
 ) => {
     try {
         const info = await transporter.sendMail({
-            from: `"ApplyPilot Team" <${process.env.EMAIL_USER}>`,
+            from: `"ApplyPilot Team" <${config.emailUser}>`,
             to,
             subject: `Follow up reminder: ${companyName} - ${role}`,
             html: `
