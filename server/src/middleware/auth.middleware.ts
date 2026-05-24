@@ -26,7 +26,7 @@ export const protect = (
     try {
         const decoded = jwt.verify(
             token,
-            process.env.JWT_SECRET as string
+            config.jwtSecret as string
         ) as JwtPayload;
 
         req.user = decoded;
