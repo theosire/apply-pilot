@@ -8,6 +8,9 @@ const config = {
     jwtSecret: process.env.JWT_SECRET || '',
     clientUrl: process.env.CLIENT_URL || '',
     nodeEnv: process.env.NODE_ENV || 'development',
+    emailUser: process.env.EMAIL_USER || '',
+    emailPass: process.env.EMAIL_PASS || '',
+    emailUser2: process.env.EMAIL_USER_2 || '',
 };
 
 const required = ['mongoUri', 'jwtSecret'] as const;

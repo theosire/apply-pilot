@@ -1,5 +1,8 @@
 // Contains application database CRUD operations used by the controller
+
+import { DateTime } from "luxon";
 import { Application } from "../models/Application.model";
+import { User } from "../models/User.model";
 
 export const getApplicationsByUser = async (userId: string) => {
     return Application.find({ userId }).sort({
@@ -12,8 +15,12 @@ export const createApplicationForUser = async (
     userId: string, 
     data: Record<string, unknown>
 ) => {
+
+    const followUpDate = await normalizeFollowUpDate(userId, data);
+
     return Application.create({ 
         ...data,
+        ...(data.followUpDate ? { followUpDate } : {}),
         userId,
         activityLog: [
             {
@@ -36,6 +43,8 @@ export const updateApplicationById = async (
     applicationId: string,
     data: Record<string, unknown>
 ) => {
+    const followUpDate = await normalizeFollowUpDate(userId, data);
+
     return Application.findOneAndUpdate(
         {
             _id: applicationId,
@@ -43,7 +52,7 @@ export const updateApplicationById = async (
         },
         {
             ...data,
-
+            ...(data.followUpDate ? { followUpDate } : {}),
             // Add an activity log entry whenever the application is updated
             $push: {
                 activityLog: {
@@ -81,7 +90,6 @@ export const moveApplicationById = async (
 
     // Only record timeline activity when the card moves to a different status
     if (oldApplication.status !== status) {
-        // Track Kanban stage changes for the application's activity timeline
         update.$push = {
             activityLog: {
                 action: `Moved to ${status}`,
@@ -108,4 +116,30 @@ export const deleteApplicationById = async (userId: string, applicationId: strin
         _id: applicationId, 
         userId,
     });
+};
+
+export const getApplicationByFollowUpDate = async (userId: string, startTime: Date, endTime: Date) => {
+    return Application.find({
+        userId,
+        followUpDate: {
+            $gte: startTime,
+            $lte: endTime,
+        },
+    });
+};
+
+// Convert the follow up date from user timezone to UTC (normalized)
+const normalizeFollowUpDate = async (
+    userId: string, 
+    data: Record<string, unknown>
+) => {
+    const user = await User.findById(userId);
+
+    if (!data.followUpDate) {
+        return undefined;
+    }
+
+    return DateTime.fromISO(data.followUpDate as string, {
+        zone: user?.timezone || "America/Toronto",
+    }).startOf("day").toJSDate();
 };

@@ -7,6 +7,7 @@ export interface User {
     passwordHash: string;
     resumeText?: string;
     weeklyGoal: number;
+    timezone: string,
     createdAt: string;
     updatedAt: string;
 }

@@ -1,4 +1,5 @@
 // Handles user authentication requests including registration, login, logout and current profile lookup
+
 import { Request, Response } from "express";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
@@ -12,7 +13,7 @@ const createToken = (userId: string) => {
 };
 
 export const register = async (req: Request, res: Response) => {
-    const { name, password, email } = req.body;
+    const { name, password, email, timezone } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -25,11 +26,14 @@ export const register = async (req: Request, res: Response) => {
         name,
         email,
         passwordHash,
+        // Frontend can auto-detect timezone; 
+        // default keeps reminders predictable before frontend exists.
+        timezone: timezone || "America/Toronto",
     });
 
     const token = createToken(user._id.toString());
 
-    // Store JWT in a HTTP-only cookie so frontend JavaScript cannot access it
+    // Store JWT in an HTTP-only cookie so frontend JavaScript cannot access it
     res.cookie("token", token, {
         httpOnly: true,
         sameSite: "lax",
@@ -41,6 +45,7 @@ export const register = async (req: Request, res: Response) => {
             id: user._id,
             name: user.name,
             email: user.email,
+            timezone: user.timezone,
         },
     });
 };
@@ -74,6 +79,7 @@ export const login = async (req: Request, res: Response) => {
             id: user._id,
             name: user.name,
             email: user.email,
+            timezone: user.timezone,
         },
     });
 };

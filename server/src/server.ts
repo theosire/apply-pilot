@@ -1,12 +1,16 @@
-// Connects to MongoDB and starts the Express server
+// Connects to MongoDB, starts background jobs, and starts the Express server
+
 import mongoose from "mongoose";
 import app from "./app";
 import config from "./config/config";
+import { startFollowUpReminder } from "./jobs/followUpReminder";
 
 const startServer = async () => {
     try {
         await mongoose.connect(config.mongoUri);
         console.log('MongoDB connected');
+
+        startFollowUpReminder();
 
         app.listen(config.port, () => {
             console.log(`Server running on port ${config.port}`);

@@ -25,7 +25,11 @@ const userSchema = new mongoose.Schema(
         weeklyGoal: {
             type: Number,
             default: 10,
-        }
+        },
+        timezone: {
+            type: String,
+            default: "America/Toronto",
+        },
     }, 
     { timestamps: true }
 );
