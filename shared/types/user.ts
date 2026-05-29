@@ -4,7 +4,6 @@ export interface User {
     _id: string;
     name: string;
     email: string;
-    passwordHash: string;
     resumeText?: string;
     weeklyGoal: number;
     timezone: string,
