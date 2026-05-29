@@ -1,5 +1,7 @@
+// Provides global authentication state and actions for the React app.
+
 import React, { createContext, useContext, useEffect, useState } from "react";
-import type { User } from "../../../shared/types/user";
+import type { User, UserBackground } from "../../../shared/types/user";
 import { api } from "../lib/axios";
 
 type AuthContextType = {
@@ -8,6 +10,7 @@ type AuthContextType = {
     register: (name: string, email: string, password: string) => Promise<void>;
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
+    updateBackground: (background: UserBackground) => Promise<void>;
 };
 
 // Stores the logged-in user globally so any component can access auth state
@@ -60,8 +63,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(null);
     };
 
+    // Save onboarding background details and update the logged-in user in context
+    const updateBackground = async (background: UserBackground) => {
+        const res = await api.patch("/api/auth/background", background);
+        setUser(res.data.user);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, isLoading, register, login, logout }}>
+        <AuthContext.Provider value={{ user, isLoading, register, login, logout, updateBackground }}>
             {children}
         </AuthContext.Provider>
     );
