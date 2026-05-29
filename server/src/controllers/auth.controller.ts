@@ -7,7 +7,6 @@ import config from "../config/config";
 import { User } from "../models/User.model";
 import { AuthRequest } from "../middleware/auth.middleware";
 
-
 const createToken = (userId: string) => {
     return jwt.sign({ userId }, config.jwtSecret as string, {
         expiresIn: "7d",
