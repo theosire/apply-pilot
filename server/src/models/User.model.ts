@@ -30,6 +30,32 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "America/Toronto",
         },
+        background: {
+          currentTitle: {
+            type: String,
+            default: "",
+          },
+          yearsExperience: {
+            type: Number,
+            default: 0,
+          },
+          skills: {
+            type: [String],
+            default: [],
+          },
+          bio: {
+            type: String,
+            default: "",
+          },
+          targetRole: {
+            type: String,
+            default: "",
+          },
+          targetSalary: {
+            type: Number,
+            default: null,
+          },
+        },
     }, 
     { timestamps: true }
 );

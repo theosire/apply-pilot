@@ -9,4 +9,14 @@ export interface User {
     timezone: string,
     createdAt: string;
     updatedAt: string;
+    background: UserBackground;
+}
+
+export interface UserBackground {
+    currentTitle: string;
+    yearsExperience: number;
+    skills: string[];
+    bio: string;
+    targetRole: string;
+    targetSalary: number | null;
 }

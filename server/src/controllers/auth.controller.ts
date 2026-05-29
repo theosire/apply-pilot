@@ -99,3 +99,19 @@ export const currentProfile = async (req: AuthRequest, res: Response) => {
 
     res.json({ user });
 };
+
+// Update the authencticated user's onboarding background profile
+export const updateBackground = async (req: AuthRequest, res: Response) => {
+    const userId = req.user?.userId;
+    const background = req.body;
+
+    if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+        userId,
+        { background },
+        { new: true, runValidators: true }
+    ).select("-passwordHash");
+}
