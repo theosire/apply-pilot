@@ -1,10 +1,11 @@
+// Defines the main frontend routes and protects authenticated pages.
+
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Login } from "./pages/auth/Login";
 import { Register } from "./pages/auth/Register";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Onboarding } from "./pages/auth/Onboarding";
-
-const Board = () => <div>Board page</div>;
+import { Board } from "./pages/Board";
 
 function App() {
   return (
