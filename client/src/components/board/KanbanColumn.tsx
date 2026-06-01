@@ -1,3 +1,4 @@
+import { useDroppable } from "@dnd-kit/core";
 import type { Application } from "../../../../shared/types/application";
 import { ApplicationCard } from "./ApplicationCard";
 
@@ -6,9 +7,20 @@ type KanbanColumnProps = {
     applications: Application[];
 };
 
+
 export const KanbanColumn = ({ title, applications }: KanbanColumnProps) => {
+    // Register the column as a droppable area using its status as the drop target id
+    const { setNodeRef, isOver } = useDroppable({
+        id: title,
+    });
+
     return (
-        <section className="rounded-lg border bg-white p-3">
+        <section 
+            ref={setNodeRef}
+            className={`rounded-lg border bg-white p-3 ${
+                isOver ? "border-blue-500 bg-blue-50" : ""
+            }`}
+        >
             <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-sm font-semibold">{title}</h2>
 

@@ -1,21 +1,38 @@
+import { useDraggable } from "@dnd-kit/core";
 import type { Application } from "../../../../shared/types/application";
 
 type ApplicationCardProps = {
     application: Application;
 };
 
+
 export const ApplicationCard = ({ application }: ApplicationCardProps) => {
     const appliedDate = application.dateApplied || application.createdAt;
-
+    
     // Show how long ago the user applied or created the application
     const daysAgo = Math.floor(
         (Date.now() - new Date(appliedDate).getTime()) / (1000 * 60 * 60 * 24)
     );
-
+    
     const isStale = daysAgo >= 14;
+    
+    // Register the application card as a draggable item using its database id
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+        id: application._id,
+    });
 
     return (
-        <article className="rounded-lg border bg-white p-3 shadow-sm">
+        <article 
+            ref={setNodeRef}
+            {...listeners}
+            {...attributes}
+            style={{
+                transform: transform
+                    ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+                    : undefined,
+            }}
+            className="rounded-lg border bg-white p-3 shadow-sm"
+        >
             <div className="mb-3 flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-sm font-semibold text-white">
                     {application.companyName[0]}
