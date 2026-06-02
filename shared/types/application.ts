@@ -12,6 +12,7 @@ export type ApplicationStatus =
 export type workType = "remote" | "hybrid" | "onsite";
 
 export interface ActivityLogTerm {
+    _id?: string;
     action: string;
     note?: string;
     timestamp: string;

@@ -3,6 +3,7 @@ import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 import type { Application, ApplicationStatus } from "../../../../shared/types/application";
 import { api } from "../../lib/axios";
 import { KanbanColumn } from "./KanbanColumn";
+import { ApplicationDetailModal } from "./ApplicationDetailModal";
 
 type KanbanBoardProps = {
     applications: Application[];
@@ -22,6 +23,7 @@ const columns: ApplicationStatus[] = [
 
 export const KanbanBoard = ({ applications } : KanbanBoardProps) => {
     const [localApplications, setLocalApplications] = useState(applications);
+    const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
 
     useEffect(() => {
         setLocalApplications(applications);
@@ -79,10 +81,18 @@ export const KanbanBoard = ({ applications } : KanbanBoardProps) => {
                             key={status}
                             title={status}
                             applications={columnApplications}
+                            onCardClick={setSelectedApplication}
                         />
                     );
                 })}
             </div>
+
+            {selectedApplication && (
+                <ApplicationDetailModal
+                    application={selectedApplication}
+                    onClose={() => setSelectedApplication(null)}
+                />
+            )}
         </DndContext>
     );
 };

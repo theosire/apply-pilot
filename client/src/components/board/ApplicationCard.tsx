@@ -3,10 +3,10 @@ import type { Application } from "../../../../shared/types/application";
 
 type ApplicationCardProps = {
     application: Application;
+    onClick: (application: Application) => void;
 };
 
-
-export const ApplicationCard = ({ application }: ApplicationCardProps) => {
+export const ApplicationCard = ({ application, onClick }: ApplicationCardProps) => {
     const appliedDate = application.dateApplied || application.createdAt;
     
     // Show how long ago the user applied or created the application
@@ -26,6 +26,7 @@ export const ApplicationCard = ({ application }: ApplicationCardProps) => {
             ref={setNodeRef}
             {...listeners}
             {...attributes}
+            onClick={() => onClick(application)}
             style={{
                 transform: transform
                     ? `translate3d(${transform.x}px, ${transform.y}px, 0)`

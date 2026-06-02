@@ -5,10 +5,10 @@ import { ApplicationCard } from "./ApplicationCard";
 type KanbanColumnProps = {
     title: string;
     applications: Application[];
+    onCardClick: (application: Application) => void;
 };
 
-
-export const KanbanColumn = ({ title, applications }: KanbanColumnProps) => {
+export const KanbanColumn = ({ title, applications, onCardClick }: KanbanColumnProps) => {
     // Register the column as a droppable area using its status as the drop target id
     const { setNodeRef, isOver } = useDroppable({
         id: title,
@@ -31,7 +31,11 @@ export const KanbanColumn = ({ title, applications }: KanbanColumnProps) => {
 
             <div className="space-y-3">
                 {applications.map((application) => (
-                    <ApplicationCard key={application._id} application={application} />
+                    <ApplicationCard 
+                        key={application._id} 
+                        application={application} 
+                        onClick={onCardClick}
+                    />
                 ))}
             </div>
         </section>
