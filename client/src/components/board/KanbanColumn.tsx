@@ -17,7 +17,7 @@ export const KanbanColumn = ({ title, applications, onCardClick }: KanbanColumnP
     return (
         <section 
             ref={setNodeRef}
-            className={`rounded-lg border bg-white p-3 ${
+            className={`min-h-96 rounded-lg border bg-white p-3 ${
                 isOver ? "border-blue-500 bg-blue-50" : ""
             }`}
         >
@@ -30,13 +30,19 @@ export const KanbanColumn = ({ title, applications, onCardClick }: KanbanColumnP
             </div>
 
             <div className="space-y-3">
-                {applications.map((application) => (
-                    <ApplicationCard 
-                        key={application._id} 
-                        application={application} 
-                        onClick={onCardClick}
-                    />
-                ))}
+                {applications.length === 0 ? (
+                    <p className="rounded-lg border border-dashed p-4 text-center text-xs text-gray-400">
+                        No applications
+                    </p>
+                ): (
+                    applications.map((application) => (
+                        <ApplicationCard 
+                            key={application._id} 
+                            application={application} 
+                            onClick={onCardClick}
+                        />
+                    ))
+                )}
             </div>
         </section>
     );

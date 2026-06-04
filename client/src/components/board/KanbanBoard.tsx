@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
+import toast from "react-hot-toast";
 import type { Application, ApplicationStatus } from "../../../../shared/types/application";
 import { api } from "../../lib/axios";
 import { KanbanColumn } from "./KanbanColumn";
@@ -61,9 +62,12 @@ export const KanbanBoard = ({ applications } : KanbanBoardProps) => {
                 status: newStatus,
                 columnOrder: 0,
             });
+
+            toast.success("Application moved");
+
         } catch {
             setLocalApplications(previousApplications);
-            alert("Failed to move application.");
+            toast.error("Failed to move application");
         }
     };
 
