@@ -11,9 +11,10 @@ const config = {
     emailUser: process.env.EMAIL_USER || '',
     emailPass: process.env.EMAIL_PASS || '',
     emailUser2: process.env.EMAIL_USER_2 || '',
+    geminiApiKey: process.env.GEMINI_API_KEY || '',
 };
 
-const required = ['mongoUri', 'jwtSecret'] as const;
+const required = ['mongoUri', 'jwtSecret', "geminiApiKey"] as const;
 required.forEach(key => {
     if (!config[key]) throw new Error(`Missing required env variable: ${key}`);
 });

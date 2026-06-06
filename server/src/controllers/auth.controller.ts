@@ -112,6 +112,12 @@ export const updateBackground = async (req: AuthRequest, res: Response) => {
     const user = await User.findByIdAndUpdate(
         userId,
         { background },
-        { new: true, runValidators: true }
+        { returnDocument: "after", runValidators: true }
     ).select("-passwordHash");
+
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ user });
 }

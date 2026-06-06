@@ -9,6 +9,7 @@ import config from './config/config';
 import authRouter from './routes/auth.routes';
 import applicationRouter from './routes/applications.routes';
 import statsRouter from './routes/stats.routes';
+import aiRouter from './routes/ai.routes';
 import { errorMiddleware } from './middleware/error.middleware';
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/applications", applicationRouter);
 app.use("/api/stats", statsRouter);
+app.use("/api/ai", aiRouter);
 
 // Error middleware must be mounted after all routes
 app.use(errorMiddleware);
