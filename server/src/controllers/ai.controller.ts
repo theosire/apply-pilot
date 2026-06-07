@@ -101,9 +101,12 @@ export const generateCoverLetter = async (req: AuthRequest, res: Response) => {
             res.end();
         } catch (error) {
             console.error("Cover letter generation failed:", error);
-            res.write(`data: ${JSON.stringify({ error: "Failed to generate cover letter" })}\n\n`);
-            res.write("data: [DONE]\n\n");
-            res.end();
+
+            res.write(
+                `data: ${JSON.stringify({
+                    error: getAiErrorMessage(error),
+                })}\n\n`
+            );
         }
 };
 
@@ -172,8 +175,25 @@ export const generateMatchScore = async (req: AuthRequest, res: Response) => {
         const matchScore = JSON.parse(cleanedText);
 
         res.json({ matchScore });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Match score generation failed:", error);
-        res.status(500).json({ message: "Failed to generate match score" });
+
+        const statusCode = error?.status === 420 ? 429 : 500;
+
+        res.status(statusCode).json({
+            message: getAiErrorMessage(error),
+        });
+    }
+};
+
+const getAiErrorMessage = (error: any) => {
+    if (error?.status === 429) {
+        return "AI rate limit reached. Please wait a few seconds and try again.";
+    }
+
+    if (error?.status === 503) {
+        return "AI service is busy right now. Please try again later.";
+
+    return "AI request failed.";
     }
 };

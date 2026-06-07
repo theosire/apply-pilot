@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Application } from "../../../../shared/types/application";
 import { api } from "../../lib/axios";
 import { CoverLetterPanel } from "../ai/CoverLetterPanel";
+import { MatchScorePanel } from "../ai/MatchScorePanel";
 
 type ApplicationDetailModalProps = {
     application: Application;
@@ -96,6 +97,8 @@ export const ApplicationDetailModal = ({
                             {application.jobDescription || "Not provided"}
                         </p>
                     </div>
+
+                    <MatchScorePanel applicationId={application._id} />
 
                     <CoverLetterPanel 
                         applicationId={application._id}
