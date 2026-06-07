@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Application } from "../../../../shared/types/application";
 import { api } from "../../lib/axios";
+import { CoverLetterPanel } from "../ai/CoverLetterPanel";
 
 type ApplicationDetailModalProps = {
     application: Application;
@@ -95,6 +96,11 @@ export const ApplicationDetailModal = ({
                             {application.jobDescription || "Not provided"}
                         </p>
                     </div>
+
+                    <CoverLetterPanel 
+                        applicationId={application._id}
+                        initialCoverLetter={application.coverLetter || ""}
+                    />
 
                     <div>
                         <label className="mb-1 block font-semibold">Notes:</label>
