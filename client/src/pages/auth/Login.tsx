@@ -20,7 +20,7 @@ export const Login = () => {
     try {
         await login(email, password);
         toast.success("Logged in successfully");
-        navigate("/board");
+        navigate("/board", { replace: true });
     } catch (error: any) {
         setMessage(error.response?.data?.message || "Login failed.");
     } finally {

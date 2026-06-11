@@ -21,7 +21,7 @@ export const Register = () => {
     try {
       await register(name, email, password);
       toast.success("Registration successful");
-      navigate("/onboarding");
+      navigate("/onboarding", { replace: true });
     } catch (error: any) {
       setMessage(error.response?.data?.message || "Registration failed.");
     } finally {

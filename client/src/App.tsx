@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import { Login } from "./pages/auth/Login";
 import { Register } from "./pages/auth/Register";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { PublicOnlyRoute } from "./components/PublicOnlyRoute";
 import { Onboarding } from "./pages/auth/Onboarding";
 import { Board } from "./pages/Board";
 
@@ -14,8 +15,23 @@ function App() {
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+
+        <Route 
+          path="/login" 
+          element={
+            <PublicOnlyRoute>
+              <Login />
+            </PublicOnlyRoute>
+          } 
+        />
+
+        <Route 
+          path="/register" 
+          element={
+            <PublicOnlyRoute>
+              <Register />
+            </PublicOnlyRoute>
+          } />
 
         <Route 
           path="/onboarding"
@@ -34,7 +50,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
       </Routes>
     </>
   );
