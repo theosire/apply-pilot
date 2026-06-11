@@ -140,8 +140,8 @@ export const AddApplicationModal = ({ onClose}: AddApplicationModalProps) => {
                 </div>
 
                 <textarea 
-                    className="min-h-28 w-full rounded border p-2" 
-                    placeholder="Job description" 
+                    className="min-h-40 w-full resize-y rounded border p-3" 
+                    placeholder="Paste the full job description here. This will be saved as a permanent snapshot." 
                     value={jobDescription} 
                     onChange={(e) => setJobDescription(e.target.value)} 
                 />
