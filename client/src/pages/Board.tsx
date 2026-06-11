@@ -1,72 +1,93 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 import { api } from "../lib/axios";
 import type { Application } from '../../../shared/types/application';
 import { KanbanBoard } from "../components/board/KanbanBoard";
 import { AddApplicationModal } from "../components/applications/AddApplicationModal";
 
 export const Board = () => {
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [search, setSearch] = useState("");
-    const [remoteOnly, setRemoteOnly] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [remoteOnly, setRemoteOnly] = useState(false);
 
-    // Fetch applications once and let React Query handle loading, caching, and refetching
-    const { data: applications = [], isLoading, isError } = useQuery({
-        queryKey: ["applications"],
-        queryFn: async () => {
-            const res = await api.get("/api/applications");
-            return res.data.applications as Application[];
-        },
-    });
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
-    // Filter already-fetched applications without making another API request
-    const filteredApplications = applications.filter((application) => {
-        const matchesSearch = 
-            application.companyName.toLowerCase().includes(search.toLowerCase()) || 
-            application.role.toLowerCase().includes(search.toLowerCase());
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login", { replace: true });
+    toast.success("Logged out successfully");
+  };
 
-        const matchesRemote = !remoteOnly || application.workType === "remote";
+  // Fetch applications once and let React Query handle loading, caching, and refetching
+  const { data: applications = [], isLoading, isError } = useQuery({
+    queryKey: ["applications"],
+    queryFn: async () => {
+      const res = await api.get("/api/applications");
+      return res.data.applications as Application[];
+    },
+  });
 
-        return matchesSearch && matchesRemote;
-    });
+  // Filter already-fetched applications without making another API request
+  const filteredApplications = applications.filter((application) => {
+    const matchesSearch = 
+      application.companyName.toLowerCase().includes(search.toLowerCase()) || 
+      application.role.toLowerCase().includes(search.toLowerCase());
 
-    if (isLoading) return <p className="p-6">Loading applications...</p>;
-    if (isError) return <p className="p-6 text-red-600">Failed to load applications.</p>;
+    const matchesRemote = !remoteOnly || application.workType === "remote";
 
-    return (
-        <main className="min-h-screen bg-gray-50 p-6">
-            <h1 className="mb-6 text-2xl font-semibold">Application Board</h1>
+    return matchesSearch && matchesRemote;
+  });
 
-            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <input 
-                    className="w-full rounded border p-2 sm:max-w-sm"
-                    placeholder="Search by company or role"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
+  if (isLoading) return <p className="p-6">Loading applications...</p>;
+  if (isError) return <p className="p-6 text-red-600">Failed to load applications.</p>;
 
-                <button
-                    onClick={() => setRemoteOnly((value) => !value)}
-                    className={`rounded border px-4 py-2 ${
-                        remoteOnly ? "bg-black text-white" : "bg-white"
-                    }`}
-                >
-                    Remote only
-                </button>
-            </div>
+  return (
+    <main className="min-h-screen bg-gray-50 p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Application Board</h1>
+          
+        <button
+          onClick={handleLogout}
+          className="rounded border bg-white px-3 py-2 text-sm hover:bg-gray-100"
+        >
+          Logout
+        </button>
+      </div>
 
-            <KanbanBoard applications={filteredApplications} />
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <input 
+          className="w-full rounded border p-2 sm:max-w-sm"
+          placeholder="Search by company or role"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-            <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="fixed bottom-6 right-6 rounded-full bg-black px-5 py-4 text-2xl text-white shadow-lg"
-            >
-                +
-            </button>
+        <button
+          onClick={() => setRemoteOnly((value) => !value)}
+          className={`rounded border px-4 py-2 ${
+              remoteOnly ? "bg-black text-white" : "bg-white"
+          }`}
+        >
+          Remote only
+        </button>
+      </div>
 
-            {isAddModalOpen && (
-                <AddApplicationModal onClose={() => setIsAddModalOpen(false)} />
-            )}
-        </main>
-    );
+      <KanbanBoard applications={filteredApplications} />
+
+      <button
+        onClick={() => setIsAddModalOpen(true)}
+        className="fixed bottom-6 right-6 rounded-full bg-black px-5 py-4 text-2xl text-white shadow-lg"
+      >
+        +
+      </button>
+
+      {isAddModalOpen && (
+        <AddApplicationModal onClose={() => setIsAddModalOpen(false)} />
+      )}
+    </main>
+  );
 };

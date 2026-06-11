@@ -33,13 +33,13 @@ export const ApplicationCard = ({ application, onClick }: ApplicationCardProps) 
             className="rounded-lg border bg-white p-3 shadow-sm"
         >
             <div className="relative mb-3 flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-sm font-semibold text-white">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-semibold text-white">
                 {application.companyName[0]}
               </div>
                     
-              <div className="pr-8">
-                <h3 className="text-sm font-semibold">{application.role}</h3>
-                <p className="text-xs text-gray-500">{application.companyName}</p>
+              <div className="min-w-0 pr-8">
+                <h3 className="truncate text-sm font-semibold">{application.role}</h3>
+                <p className="truncate text-xs text-gray-500">{application.companyName}</p>
               </div>
                     
               <button
