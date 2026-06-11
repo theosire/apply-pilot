@@ -1,46 +1,88 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 
 export const Register = () => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const { register } = useAuth();
-    const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
-        await register(name, email, password);
-        navigate("/board");
-    };
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setMessage("");
+    setIsSubmitting(true);
 
-    return (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 space-y-4">
-            <input 
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Name"
-                className="w-full rounded border p-2"
-            />
+    try {
+      await register(name, email, password);
+      toast.success("Registration successful");
+      navigate("/onboarding");
+    } catch (error: any) {
+      setMessage(error.response?.data?.message || "Registration failed.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-            <input 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                className="w-full rounded border p-2"
-            />
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-gray-50 p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md space-y-4 rounded-lg border bg-white p-6 shadow-sm"
+      >
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold">ApplyPilot</h1>
+          <p className="text-sm text-gray-500">Create your job tracker account</p>
+        </div>
 
-            <input 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                type="password"
-                className="w-full rounded border p-2"
-            />
+        {message && (
+          <p className="rounded border bg-gray-50 p-2 text-sm text-gray-700">
+            {message}
+          </p>
+        )}
 
-            <button type="submit" className="w-full rounded bg-black px-4 py-2 text-white">Register</button>
-        </form>
-    );
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Name"
+          className="w-full rounded border p-2"
+        />
+
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          className="w-full rounded border p-2"
+        />
+
+        <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          type="password"
+          className="w-full rounded border p-2"
+        />
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+        >
+          {isSubmitting ? "Creating account..." : "Register"}
+        </button>
+
+        <p className="text-center text-sm text-gray-500">
+          Already have an account?{" "}
+          <Link to="/login" className="text-black underline">
+            Login
+          </Link>
+        </p>
+      </form>
+    </main>
+  );
 };
