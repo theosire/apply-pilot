@@ -74,16 +74,16 @@ export const Board = () => {
         >
           Remote only
         </button>
+
+        <button
+          onClick={() => setIsAddModalOpen(true)}
+          className="rounded bg-black px-4 py-2 text-white"
+        >
+          + Add Application
+        </button>
       </div>
 
       <KanbanBoard applications={filteredApplications} />
-
-      <button
-        onClick={() => setIsAddModalOpen(true)}
-        className="fixed bottom-6 right-6 rounded-full bg-black px-5 py-4 text-2xl text-white shadow-lg"
-      >
-        +
-      </button>
 
       {isAddModalOpen && (
         <AddApplicationModal onClose={() => setIsAddModalOpen(false)} />
