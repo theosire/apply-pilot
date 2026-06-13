@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { api } from "../lib/axios";
 import type { Application } from '../../../shared/types/application';
 import { KanbanBoard } from "../components/board/KanbanBoard";
-import { AddApplicationModal } from "../components/applications/AddApplicationModal";
+import { ApplicationFormModal } from "../components/applications/ApplicationFormModal";
 
 export const Board = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -123,7 +123,7 @@ export const Board = () => {
       <KanbanBoard applications={filteredApplications} />
 
       {isAddModalOpen && (
-        <AddApplicationModal onClose={() => setIsAddModalOpen(false)} />
+        <ApplicationFormModal onClose={() => setIsAddModalOpen(false)} />
       )}
     </main>
   );

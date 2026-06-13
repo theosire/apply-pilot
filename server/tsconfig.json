@@ -7,10 +7,8 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
     "paths": {
-      "@shared/*": ["../shared/*"]
+      "@shared/*": ["./../shared/*"]
     },
-    "ignoreDeprecations": "6.0"
   }
 }
