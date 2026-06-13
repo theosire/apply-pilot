@@ -2,12 +2,13 @@
 
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { Login } from "./pages/auth/Login";
-import { Register } from "./pages/auth/Register";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { PublicOnlyRoute } from "./components/PublicOnlyRoute";
+import { Login } from "./pages/auth/Login";
+import { Register } from "./pages/auth/Register";
 import { Onboarding } from "./pages/auth/Onboarding";
 import { Board } from "./pages/Board";
+import { ErrorPage } from "./pages/errors/ErrorPage";
 
 function App() {
   return (
@@ -49,6 +50,45 @@ function App() {
               <Board />
             </ProtectedRoute>
           }
+        />
+
+        <Route 
+          path="/400" 
+          element={
+            <ErrorPage 
+              code="400"
+              title="Bad Request"
+              message="Something about the request was invalid."
+              actionLabel="Back to board"
+              actionTo="/board"
+            />
+          } 
+        />
+
+        <Route 
+          path="/500" 
+          element={
+            <ErrorPage 
+              code="500"
+              title="Server Error"
+              message="Something went wrong on our side. Please try again later."
+              actionLabel="Back to board"
+              actionTo="/board"
+            />
+          } 
+        />
+
+        <Route 
+          path="*" 
+          element={
+            <ErrorPage 
+              code="404"
+              title="Page Not Found"
+              message="The page you are looking for does not exist."
+              actionLabel="Back to login"
+              actionTo="/login"
+            />
+          } 
         />
       </Routes>
     </>
