@@ -19,7 +19,7 @@ function App() {
         <Route 
           path="/login" 
           element={
-            <PublicOnlyRoute>
+            <PublicOnlyRoute redirectTo="/board">
               <Login />
             </PublicOnlyRoute>
           } 
@@ -28,7 +28,7 @@ function App() {
         <Route 
           path="/register" 
           element={
-            <PublicOnlyRoute>
+            <PublicOnlyRoute redirectTo="/onboarding">
               <Register />
             </PublicOnlyRoute>
           } />
