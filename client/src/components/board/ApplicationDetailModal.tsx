@@ -26,10 +26,14 @@ export const ApplicationDetailModal = ({
 
   const updateApplication = useMutation({
     mutationFn: async (data: Partial<Application>) => {
-      const res = await api.patch(`/api/applications/${application._id}`, data);
+      const res = await api.patch(
+        `/api/applications/${currentApplication._id}`,
+        data
+      );
       return res.data.application;
     },
-    onSuccess: () => {
+    onSuccess: (updatedApplication) => {
+      setCurrentApplication(updatedApplication);
       queryClient.invalidateQueries({ queryKey: ["applications"] });
       toast.success("Application updated");
     },
@@ -38,10 +42,9 @@ export const ApplicationDetailModal = ({
     },
   });
 
-  // Delete the application, refresh the board and close the modal
   const deleteApplication = useMutation({
     mutationFn: async () => {
-      await api.delete(`/api/applications/${application._id}`);
+      await api.delete(`/api/applications/${currentApplication._id}`);
     },
     onSuccess: () => {
       toast.success("Application deleted");
@@ -53,12 +56,9 @@ export const ApplicationDetailModal = ({
     },
   });
 
-  // Close the modal when the user presses Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
+      if (e.key === "Escape") onClose();
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -82,8 +82,7 @@ export const ApplicationDetailModal = ({
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
         <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-lg bg-white shadow-lg">
-          {/* Keep the header visible while scrolling through long application details */}
-          <div className="sticky top-0 z-10 border-b bg-white p-6">
+          <div className="shrink-0 border-b bg-white p-6">
             <div className="flex items-start justify-between gap-4 rounded-lg bg-gray-50 p-4">
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-gray-500">
@@ -105,8 +104,7 @@ export const ApplicationDetailModal = ({
             </div>
           </div>
 
-          {/* Main scrollable modal body */}
-          <div className="space-y-6 overflow-y-auto p-6">
+          <div className="flex-1 space-y-6 overflow-y-auto p-6">
             <div className="grid gap-3 sm:grid-cols-2">
               <DetailItem label="Work type" value={currentApplication.workType} />
               <DetailItem label="Status" value={currentApplication.status} />
@@ -155,7 +153,7 @@ export const ApplicationDetailModal = ({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 onBlur={async () => {
-                  if (notes !== application.notes) {
+                  if (notes !== currentApplication.notes) {
                     await updateApplication.mutateAsync({ notes });
                   }
                 }}
@@ -203,35 +201,41 @@ export const ApplicationDetailModal = ({
                 </ol>
               )}
             </div>
+          </div>
 
-            <div className="flex gap-3 border-t pt-4">
-              <button
-                type="button"
-                onClick={() => setIsEditing(true)}
-                className="rounded border px-4 py-2 text-sm hover:bg-gray-100"
-              >
-                Edit
-              </button>
+          <div className="flex shrink-0 justify-between gap-3 border-t bg-white p-6">
+            <button
+              type="button"
+              disabled={deleteApplication.isPending}
+              onClick={() => deleteApplication.mutate()}
+              className="rounded border border-red-200 px-4 py-2 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+            >
+              {deleteApplication.isPending ? "Deleting..." : "Delete"}
+            </button>
 
-              <button
-                type="button"
-                disabled={deleteApplication.isPending}
-                onClick={() => deleteApplication.mutate()}
-                className="rounded border border-red-200 px-4 py-2 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
-              >
-                {deleteApplication.isPending ? "Deleting..." : "Delete"}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="rounded bg-black px-4 py-2 text-sm text-white hover:bg-gray-800"
+            >
+              Edit
+            </button>
           </div>
         </div>
       </div>
 
       {isEditing && (
-        <ApplicationFormModal 
+        <ApplicationFormModal
           application={currentApplication}
           onClose={() => setIsEditing(false)}
-          onSaved={(updateApplication) => {
-            setCurrentApplication(updateApplication);
+          onSaved={(updatedApplication) => {
+            setCurrentApplication(updatedApplication);
+            setNotes(updatedApplication.notes || "");
+            setFollowUpDate(
+              updatedApplication.followUpDate
+                ? updatedApplication.followUpDate.split("T")[0]
+                : ""
+            );
           }}
         />
       )}
@@ -239,7 +243,10 @@ export const ApplicationDetailModal = ({
   );
 };
 
-const DetailItem = ({ label, value }: {
+const DetailItem = ({
+  label,
+  value,
+}: {
   label: string;
   value: React.ReactNode;
 }) => (
