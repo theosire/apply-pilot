@@ -11,7 +11,8 @@ import { AddApplicationModal } from "../components/applications/AddApplicationMo
 export const Board = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [remoteOnly, setRemoteOnly] = useState(false);
+  const [workTypeFilter, setWorkTypeFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
 
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -32,15 +33,36 @@ export const Board = () => {
   });
 
   // Filter already-fetched applications without making another API request
-  const filteredApplications = applications.filter((application) => {
-    const matchesSearch = 
-      application.companyName.toLowerCase().includes(search.toLowerCase()) || 
-      application.role.toLowerCase().includes(search.toLowerCase());
+  const filteredApplications = applications.
+    filter((application) => {
+      const matchesSearch = 
+        application.companyName.toLowerCase().includes(search.toLowerCase()) || 
+        application.role.toLowerCase().includes(search.toLowerCase());
 
-    const matchesRemote = !remoteOnly || application.workType === "remote";
+      const matchesWorkType =
+        workTypeFilter === "all" || application.workType === workTypeFilter;
 
-    return matchesSearch && matchesRemote;
-  });
+      return matchesSearch && matchesWorkType;
+
+    }).sort((a, b) => {
+      if (sortBy === "newest") {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+
+      if (sortBy === "oldest") {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+
+      if (sortBy === "company") {
+        return a.companyName.localeCompare(b.companyName);
+      }
+
+      if (sortBy === "role") {
+        return a.role.localeCompare(b.role);
+      }
+
+      return 0;
+    });
 
   if (isLoading) return <p className="p-6">Loading applications...</p>;
   if (isError) return <p className="p-6 text-red-600">Failed to load applications.</p>;
@@ -58,29 +80,44 @@ export const Board = () => {
         </button>
       </div>
 
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <input 
-          className="w-full rounded border p-2 sm:max-w-sm"
+      <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <input
+          className="w-full rounded border p-2 lg:max-w-sm"
           placeholder="Search by company or role"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <button
-          onClick={() => setRemoteOnly((value) => !value)}
-          className={`rounded border px-4 py-2 ${
-              remoteOnly ? "bg-black text-white" : "bg-white"
-          }`}
-        >
-          Remote only
-        </button>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <select
+            className="rounded border bg-white px-3 py-2"
+            value={workTypeFilter}
+            onChange={(e) => setWorkTypeFilter(e.target.value)}
+          >
+            <option value="all">All work types</option>
+            <option value="remote">Remote</option>
+            <option value="hybrid">Hybrid</option>
+            <option value="onsite">Onsite</option>
+          </select>
 
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="rounded bg-black px-4 py-2 text-white"
-        >
-          + Add Application
-        </button>
+          <select
+            className="rounded border bg-white px-3 py-2"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="company">Company A-Z</option>
+            <option value="role">Role A-Z</option>
+          </select>
+
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="rounded bg-black px-4 py-2 text-white"
+          >
+            + Add Application
+          </button>
+        </div>
       </div>
 
       <KanbanBoard applications={filteredApplications} />
