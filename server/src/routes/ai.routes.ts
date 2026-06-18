@@ -1,12 +1,7 @@
 // Defines API routes for user authentication
 import express from "express";
 import { protect } from "../middleware/auth.middleware";
-import { 
-    generateCoverLetter, 
-    generateMatchScore, 
-    generateInterviewPrep, 
-    generateFollowUpEmail,
-} from "../controllers/ai.controller";
+import { generateMatchScore } from "../controllers/ai.controller";
 
 const aiRouter = express.Router();
 
