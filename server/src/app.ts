@@ -15,9 +15,15 @@ import { errorMiddleware } from './middleware/error.middleware';
 const app = express();
 
 app.use(helmet());
+
+const allowedOrigins = [
+    config.clientUrl,
+    "http://localhost:5173",
+].filter(Boolean);
+
 app.use(
     cors({ 
-        origin: config.clientUrl, 
+        origin: allowedOrigins, 
         credentials: true 
     })
 );
