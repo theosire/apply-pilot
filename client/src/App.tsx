@@ -8,6 +8,7 @@ import { Login } from "./pages/auth/Login";
 import { Register } from "./pages/auth/Register";
 import { Onboarding } from "./pages/auth/Onboarding";
 import { Board } from "./pages/Board";
+import { Profile } from "./pages/Profile";
 import { ErrorPage } from "./pages/errors/ErrorPage";
 
 function App() {
@@ -48,6 +49,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Board />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />

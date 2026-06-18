@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -13,8 +13,9 @@ export const Board = () => {
   const [search, setSearch] = useState("");
   const [workTypeFilter, setWorkTypeFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -64,6 +65,33 @@ export const Board = () => {
       return 0;
     });
 
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(e.target as Node)
+      ) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const initials =
+    user?.name
+      ?.split(" ")
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "U";
+
   if (isLoading) return <p className="p-6">Loading applications...</p>;
   if (isError) return <p className="p-6 text-red-600">Failed to load applications.</p>;
 
@@ -72,12 +100,42 @@ export const Board = () => {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Application Board</h1>
           
-        <button
-          onClick={handleLogout}
-          className="rounded border bg-white px-3 py-2 text-sm hover:bg-gray-100"
-        >
-          Logout
-        </button>
+        <div className="relative" ref={profileMenuRef}>
+          <button
+            type="button"
+            onClick={() => setIsProfileMenuOpen((value) => !value)}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-sm font-semibold text-white hover:opacity-90"
+            aria-label="Open profile menu"
+          >
+            {initials}
+          </button>
+
+          {isProfileMenuOpen && (
+            <div className="absolute right-0 mt-2 w-44 rounded border bg-white py-1 shadow-lg">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsProfileMenuOpen(false);
+                  navigate("/profile");
+                }}
+                className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
+              >
+                Profile details
+              </button>
+              
+              <button
+                type="button"
+                onClick={async () => {
+                  setIsProfileMenuOpen(false);
+                  await handleLogout();
+                }}
+                className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
