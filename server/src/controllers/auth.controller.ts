@@ -37,8 +37,8 @@ export const register = async (req: Request, res: Response) => {
     // Store JWT in an HTTP-only cookie so frontend JavaScript cannot access it
     res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        secure: config.nodeEnv === "production",
     });
 
     res.status(201).json({
@@ -71,8 +71,8 @@ export const login = async (req: Request, res: Response) => {
     // Store JWT in a HTTP-only cookie so frontend JavaScript cannot access it
     res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        secure: config.nodeEnv === "production",
     });
 
     res.json({
@@ -88,8 +88,8 @@ export const login = async (req: Request, res: Response) => {
 export const logout = async (req: Request, res: Response) => {
     res.clearCookie("token", {
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        secure: config.nodeEnv === "production",
     });
     res.json({ message: "Logged out" });
 };

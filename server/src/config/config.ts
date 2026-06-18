@@ -14,7 +14,13 @@ const config = {
     geminiApiKey: process.env.GEMINI_API_KEY || '',
 };
 
-const required = ['mongoUri', 'jwtSecret', "geminiApiKey"] as const;
+const required = [
+    "mongoUri",
+    "jwtSecret",
+    "geminiApiKey",
+    "clientUrl",
+] as const;
+
 required.forEach(key => {
     if (!config[key]) throw new Error(`Missing required env variable: ${key}`);
 });
