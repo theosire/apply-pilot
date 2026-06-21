@@ -33,18 +33,41 @@ export const Board = () => {
     },
   });
 
-  // Filter already-fetched applications without making another API request
-  const filteredApplications = applications.
-    filter((application) => {
-      const matchesSearch = 
-        application.companyName.toLowerCase().includes(search.toLowerCase()) || 
-        application.role.toLowerCase().includes(search.toLowerCase());
+  /// Normalize serach so "test1", "test 1" and "1 test" can match the same application
+  const normalizeSearch = (value: string) =>
+    value.toLowerCase().replace(/[^a-z0-9\s]/g, " ").trim();
 
+  const getSearchTokens = (value: string) =>
+    normalizeSearch(value)
+      .split(/\s+/)
+      .filter(Boolean);
+
+  const searchTokens = getSearchTokens(search);
+
+  const filteredApplications = applications
+    .filter((application) => {
+      const searchableText = [
+        application.companyName,
+        application.role,
+        application.workType,
+        application.status,
+        application.notes,
+        application.jobDescription,
+      ]
+        .filter(Boolean)
+        .join(" ");
+      
+      const normalizedText = normalizeSearch(searchableText);
+      const compactText = normalizedText.replace(/\s/g, "");
+      
+      const matchesSearch =
+        searchTokens.length === 0 ||
+        searchTokens.every((token) => compactText.includes(token));
+      
       const matchesWorkType =
         workTypeFilter === "all" || application.workType === workTypeFilter;
-
+      
       return matchesSearch && matchesWorkType;
-
     }).sort((a, b) => {
       if (sortBy === "newest") {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -67,6 +90,7 @@ export const Board = () => {
 
   const profileMenuRef = useRef<HTMLDivElement>(null);
 
+  // Close the profile menu when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -139,12 +163,17 @@ export const Board = () => {
       </div>
 
       <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <input
-          className="w-full rounded border p-2 lg:max-w-sm"
-          placeholder="Search by company or role"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <div className="w-full lg:max-w-sm">
+          <label className="mb-1 block text-sm font-medium">
+            Search applications
+          </label>
+          <input
+            className="w-full rounded border p-2"
+            placeholder="Search by company, role, or notes"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
         <div className="flex flex-col gap-2 sm:flex-row">
           <select

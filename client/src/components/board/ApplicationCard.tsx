@@ -21,6 +21,8 @@ export const ApplicationCard = ({ application, onClick }: ApplicationCardProps) 
         id: application._id,
     });
 
+    const isDragging = Boolean(transform);
+
     return (
         <article 
             ref={setNodeRef}
@@ -30,14 +32,16 @@ export const ApplicationCard = ({ application, onClick }: ApplicationCardProps) 
                     ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
                     : undefined,
             }}
-            className="rounded-lg border bg-white p-3 shadow-sm"
+            className={`cursor-pointer rounded-lg border bg-white p-3 shadow-sm transition-shadow hover:border-gray-300 hover:shadow-md active:shadow-sm ${
+                isDragging ? "relative z-50 shadow-lg" : ""
+            }`}
         >
             <div className="relative mb-3 flex items-center gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-900 text-sm font-semibold text-white">
                 {application.companyName[0]}
               </div>
                     
-              <div className="min-w-0 pr-8">
+              <div className="min-w-0 select-none pr-8">
                 <h3 className="truncate text-sm font-semibold">{application.role}</h3>
                 <p className="truncate text-xs text-gray-500">{application.companyName}</p>
               </div>
@@ -47,7 +51,7 @@ export const ApplicationCard = ({ application, onClick }: ApplicationCardProps) 
                 {...listeners}
                 {...attributes}
                 onClick={(e) => e.stopPropagation()}
-                className="absolute right-0 top-0 cursor-grab select-none rounded px-2 py-1 text-gray-400 hover:bg-gray-100"
+                className="absolute right-0 top-0 cursor-grab select-none rounded px-2 py-1 text-gray-400 hover:bg-gray-100 active:cursor-grabbing"
                 aria-label="Drag application card"
               >
                 ⠿
@@ -55,7 +59,7 @@ export const ApplicationCard = ({ application, onClick }: ApplicationCardProps) 
             </div>
 
 
-            <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center justify-between text-xs select-none">
                 <span className="rounded-full bg-gray-100 px-2 py-1">
                     {application.workType}
                 </span>
