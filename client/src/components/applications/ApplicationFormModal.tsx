@@ -43,6 +43,7 @@ export const ApplicationFormModal = ({
   const [salaryMax, setSalaryMax] = useState(
     application?.salaryMax ? String(application.salaryMax): ""
   );
+  const [url, setUrl] = useState(application?.url || "");
   const [jobDescription, setJobDescription] = useState(application?.jobDescription || "");
   const [notes, setNotes] = useState(application?.notes || "");
 
@@ -57,6 +58,7 @@ export const ApplicationFormModal = ({
         status,
         salaryMin: salaryMin ? Number(salaryMin) : null,
         salaryMax: salaryMax ? Number(salaryMax) : null,
+        url,
         jobDescription,
         notes,
       };
@@ -70,7 +72,7 @@ export const ApplicationFormModal = ({
       return res.data.application;
     },
     onSuccess: (savedApplication) => {
-      toast.success(isEditing ? "Appliation updated" : "Application added");
+      toast.success(isEditing ? "Application updated" : "Application added");
       queryClient.invalidateQueries({ queryKey: ["applications"] });
       onSaved?.(savedApplication);
       onClose();
@@ -134,86 +136,123 @@ export const ApplicationFormModal = ({
         </div>
 
         <div className="space-y-4 overflow-y-auto p-6">
-          <input
-            required
-            className="w-full rounded border p-2"
-            placeholder="Company"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-          />
-
-          <input
-            className="w-full rounded border p-2"
-            placeholder="Company domain"
-            value={companyDomain}
-            onChange={(e) => setCompanyDomain(e.target.value)}
-          />
-
-          <input
-            required
-            className="w-full rounded border p-2"
-            placeholder="Role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          />
-
-          <select
-            className="w-full rounded border p-2"
-            value={workType}
-            onChange={(e) => setWorkType(e.target.value as WorkType)}
-          >
-            <option value="remote">Remote</option>
-            <option value="hybrid">Hybrid</option>
-            <option value="onsite">Onsite</option>
-          </select>
-
-          <select
-            className="w-full rounded border p-2"
-            value={status}
-            onChange={(e) => setStatus(e.target.value as ApplicationStatus)}
-          >
-            <option>Saved</option>
-            <option>Applied</option>
-            <option>Phone Screen</option>
-            <option>Technical Interview</option>
-            <option>Final Round</option>
-            <option>Offer</option>
-            <option>Rejected / Closed</option>
-          </select>
-
-          <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="mb-1 block text-sm font-medium">Company</label>
             <input
-              className="rounded border p-2"
-              type="number"
-              min="0"
-              placeholder="Salary min"
-              value={salaryMin}
-              onChange={(e) => setSalaryMin(e.target.value)}
-            />
-
-            <input
-              className="rounded border p-2"
-              type="number"
-              min="0"
-              placeholder="Salary max"
-              value={salaryMax}
-              onChange={(e) => setSalaryMax(e.target.value)}
+              required
+              className="w-full rounded border p-2"
+              placeholder="Company"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
             />
           </div>
 
-          <textarea
-            className="min-h-40 w-full resize-y rounded border p-3"
-            placeholder="Paste the full job description here."
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-          />
+          <div>
+            <label className="mb-1 block text-sm font-medium">Company website</label>
+            <input
+              className="w-full rounded border p-2"
+              placeholder="https://company.com"
+              value={companyDomain}
+              onChange={(e) => setCompanyDomain(e.target.value)}
+            />
+          </div>
 
-          <textarea
-            className="min-h-20 w-full rounded border p-2"
-            placeholder="Notes"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
+          <div>
+            <label className="mb-1 block text-sm font-medium">Role</label>
+            <input
+              required
+              className="w-full rounded border p-2"
+              placeholder="Role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">Work type</label>
+            <select
+              className="w-full rounded border p-2"
+              value={workType}
+              onChange={(e) => setWorkType(e.target.value as WorkType)}
+            >
+              <option value="remote">Remote</option>
+              <option value="hybrid">Hybrid</option>
+              <option value="onsite">Onsite</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">Status</label>
+            <select
+              className="w-full rounded border p-2"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as ApplicationStatus)}
+            >
+              <option>Saved</option>
+              <option>Applied</option>
+              <option>Phone Screen</option>
+              <option>Technical Interview</option>
+              <option>Final Round</option>
+              <option>Offer</option>
+              <option>Rejected / Closed</option>
+            </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-1 block text-sm font-medium">Salary min</label>
+              <input
+                className="rounded border p-2"
+                type="number"
+                min="0"
+                placeholder="Salary min"
+                value={salaryMin}
+                onChange={(e) => setSalaryMin(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium">Salary max</label>
+              <input
+                className="rounded border p-2"
+                type="number"
+                min="0"
+                placeholder="Salary max"
+                value={salaryMax}
+                onChange={(e) => setSalaryMax(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">Job posting URL</label>
+            <input
+              className="w-full rounded border p-2"
+              placeholder="https://company.com/jobs/software-engineer"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">Job description</label>
+            <textarea
+              className="min-h-40 w-full resize-y rounded border p-3"
+              placeholder="Paste the full job description here."
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">Notes</label>
+            <textarea
+              className="min-h-20 w-full rounded border p-2"
+              placeholder="Notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="sticky bottom-0 border-t bg-white p-6">

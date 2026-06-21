@@ -120,6 +120,22 @@ export const ApplicationDetailModal = ({
             </div>
 
             <div>
+              <h3 className="mb-2 font-semibold">Company website</h3>
+              {currentApplication.companyDomain ? (
+                <a
+                  href={currentApplication.companyDomain}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  Visit company website
+                </a>
+              ) : (
+                <p className="text-sm text-gray-500">Not provided</p>
+              )}
+            </div>
+
+            <div>
               <h3 className="mb-2 font-semibold">Job posting</h3>
               {currentApplication.url ? (
                 <a
