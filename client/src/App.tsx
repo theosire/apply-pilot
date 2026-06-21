@@ -14,7 +14,7 @@ import { ErrorPage } from "./pages/errors/ErrorPage";
 function App() {
   return (
     <>
-      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
+      <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
 
