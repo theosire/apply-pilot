@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
+import { PasswordInput } from "../../components/forms/PasswordInput";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -52,13 +53,7 @@ export const Login = () => {
           className="w-full rounded border p-2"
         />
 
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          type="password"
-          className="w-full rounded border p-2"
-        />
+        <PasswordInput value={password} onChange={setPassword} />
 
         <button
           type="submit"
